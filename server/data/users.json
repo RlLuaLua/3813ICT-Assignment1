@@ -1,0 +1,6 @@
+[
+    {"username": "super", "email": "super@duper.com", "password": "duper", "role": "superAdmin"},
+    {"username": "Buddy", "email": "dog@doghouse.com", "password": "bone", "role": "groupAdmin"},
+    {"username": "Knives", "email": "cat@catshack.com", "password": "fish", "role": "assisAdmin"},
+    {"username": "Polly", "email": "bird@birdcage.com", "password": "seed", "role": ""}
+]

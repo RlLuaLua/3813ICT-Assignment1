@@ -1,0 +1,32 @@
+[
+    {
+        "name": "room1", 
+        "channels": [
+            {
+                "name": "r1 channel 1", 
+                "messages": [""]
+            },
+            {
+                "name": "r1 channel 2", 
+                "messages": [""]
+            },
+            {
+                "name": "r1 channel 3", 
+                "messages": [""]
+            }
+        ]
+    },
+    {
+        "name": "room2", 
+        "channels": [
+            {
+                "name": "r2 channel 1", 
+                "messages": [""]
+            },
+            {
+                "name": "r2 channel 2", 
+                "messages": [""]
+            }
+        ]
+    }
+]
