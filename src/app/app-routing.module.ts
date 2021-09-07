@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Routes, RouterModule, Router } from '@angular/router';
-import { from, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 
 import { ChatComponent } from './chat/chat.component';
 import { LoginComponent } from './login/login.component';

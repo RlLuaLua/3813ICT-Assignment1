@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import io from 'socket.io-client';
-const SERVER_URL = 'http://localhost:3000';
+const SERVER_URL = 'http://localhost:3000/chat';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -23,7 +24,5 @@ export class SocketService {
     return observable;
   }
 
-  public sendLogin(logininfo: object): void {
-    this.socket.emit('sendLogin', logininfo);
-  }
+  
 }

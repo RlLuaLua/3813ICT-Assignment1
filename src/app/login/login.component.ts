@@ -7,7 +7,7 @@ const httpOptions = {
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 
-const BACKEND_URL = 'http://localhost:3000';
+//const BACKEND_URL = 'http://localhost:3000';
 
 @Component({
   selector: 'app-login',
@@ -24,7 +24,7 @@ export class LoginComponent implements OnInit {
   }
 
   loginClicked() {
-    var userlogin = {username: this.username, password: this.password};
+    /*var userlogin = {username: this.username, password: this.password};
     console.log(userlogin);
     this.http.post(BACKEND_URL + '/api/auth', userlogin, httpOptions)
       .subscribe((data: any) => {
@@ -39,6 +39,6 @@ export class LoginComponent implements OnInit {
         } else {
           alert('Sorry, username or password is not valid');
         }
-      });
+      });*/
   }
 }

@@ -11,11 +11,6 @@ export class ChatComponent implements OnInit {
   messagecontent:string="";
   messages:string[] = [];
   ioConnection:any;
-
-  availRooms = [];
-  selectRoom:string="";
-  curRoom:string="";
-  isInRoom = false;
   
   constructor(private socketService: SocketService) { }
 

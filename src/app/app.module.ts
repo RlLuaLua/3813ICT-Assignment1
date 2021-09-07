@@ -4,6 +4,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { SocketService } from './services/socket.service';
+import { RoomService } from './services/room.service';
 
 import { AppComponent } from './app.component';
 import { ChatComponent } from './chat/chat.component';
@@ -24,9 +25,7 @@ import { RoomComponent } from './room/room.component';
     FormsModule,
     CommonModule
   ],
-  providers: [SocketService],
+  providers: [SocketService, RoomService],
   bootstrap: [AppComponent]
 })
-export class AppModule {
-  
-}
+export class AppModule { }

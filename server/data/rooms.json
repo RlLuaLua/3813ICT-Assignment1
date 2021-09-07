@@ -14,6 +14,16 @@
                 "name": "r1 channel 3", 
                 "messages": [""]
             }
+        ],
+        "users": [
+            {
+                "id": 1,
+                "role": "assis"
+            },
+            {
+                "id": 2,
+                "role": "user"
+            }
         ]
     },
     {
@@ -26,6 +36,43 @@
             {
                 "name": "r2 channel 2", 
                 "messages": [""]
+            }
+        ],
+        "users": [
+            {
+                "id": 0,
+                "role": "assis"
+            },
+            {
+                "id": 3,
+                "role": "user"
+            }
+        ]
+    },
+    {
+        "name": "room3", 
+        "channels": [
+            {
+                "name": "r3 channel 1", 
+                "messages": [""]
+            },
+            {
+                "name": "r3 channel 2", 
+                "messages": [""]
+            },
+            {
+                "name": "r3 channel 3", 
+                "messages": [""]
+            }
+        ],
+        "users": [
+            {
+                "id": 1,
+                "role": "user"
+            },
+            {
+                "id": 2,
+                "role": "assis"
             }
         ]
     }
