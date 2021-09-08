@@ -1,4 +1,16 @@
-<p>room works!</p>
-<div *ngFor = "let room of rooms">
-    <a (onclick)=><h1>{{room.name}}</h1></a>
-</div>
+<h1>User: (username)</h1>
+<label><h3>Group Select</h3></label><br>
+<select [(ngModel)] = "currentroom" name = "currentroom">
+    <option [ngValue] = "null">Select Group</option>
+    <option *ngFor = "let room of rooms">
+        {{room.name}}
+    </option>
+</select>
+<button (click) = "selectRoom()">select</button><br>
+<label><h3>Channel Select</h3></label><br>
+<select [(ngModel)] = "currentchannel" name = "currentchannel">
+    <option [ngValue] = "null">Select Room</option>
+    <option *ngFor = "let roomchannel of roomchannels">
+        {{roomchannel.name}} 
+    </option>
+</select>

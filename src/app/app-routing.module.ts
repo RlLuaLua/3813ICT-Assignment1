@@ -9,8 +9,8 @@ import { RoomComponent } from './room/room.component';
 
 const routes: Routes = [
   {path: 'chat', component: ChatComponent},
-  {path: 'login', component: LoginComponent},
-  {path: '', component: RoomComponent}
+  {path: '', component: LoginComponent},
+  {path: 'group', component: RoomComponent}
 ];
 
 

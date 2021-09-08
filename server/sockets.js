@@ -26,16 +26,9 @@ module.exports = {
             console.log('room: user connection on port ' + PORT + ':' + socket.id);
             
             socket.on("rooms", (id) => {
-                var retRooms = [];
                 for(let i=0; i < roomArray.length; i++) {
-                    console.log('step2');
-                    console.log(roomArray[i]);
                     for(let j=0; j < roomArray[i].users.length; j++) {
-                        console.log('step3');
-                        console.log(roomArray[i].users[j]);
                         if (roomArray[i].users[j].id == id){
-                            console.log('step4');
-                            console.log(roomArray[i]);
                             room.emit('rooms', roomArray[i]);
                         }
                     }
