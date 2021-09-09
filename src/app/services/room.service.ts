@@ -20,4 +20,20 @@ export class RoomService {
   getRooms(next): void{
     this.socket.on("rooms", res=>next(res));
   }
+
+  joinRoom(room){
+    this.socket.emit("joinroom", room);
+  }
+
+  joinedRoom(next){
+    this.socket.on("joinroom", res=>next(res));
+  }
+  
+  joinChannel(room, channel){
+    this.socket.emit("joinchannel", room, channel);
+  }
+
+  joinedChannel(next){
+    this.socket.on("joinchannel", res=>next(res));
+  }
 }

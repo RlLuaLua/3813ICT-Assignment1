@@ -6,7 +6,7 @@
         {{room.name}}
     </option>
 </select>
-<button (click) = "selectRoom()">select</button><br>
+<button (click) = "selectRoom()">Select</button><br>
 <label><h3>Channel Select</h3></label><br>
 <select [(ngModel)] = "currentchannel" name = "currentchannel">
     <option [ngValue] = "null">Select Room</option>
@@ -14,3 +14,4 @@
         {{roomchannel.name}} 
     </option>
 </select>
+<button (click) = "selectChannel()">Select</button>

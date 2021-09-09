@@ -4,15 +4,15 @@
         "channels": [
             {
                 "name": "r1 channel 1", 
-                "messages": [""]
+                "messages": ["start"]
             },
             {
                 "name": "r1 channel 2", 
-                "messages": [""]
+                "messages": ["start 2"]
             },
             {
                 "name": "r1 channel 3", 
-                "messages": [""]
+                "messages": [" start3"]
             }
         ],
         "users": [
@@ -31,20 +31,24 @@
         "channels": [
             {
                 "name": "r2 channel 1", 
-                "messages": [""]
+                "messages": ["start"]
             },
             {
                 "name": "r2 channel 2", 
-                "messages": [""]
+                "messages": ["start"]
             }
         ],
         "users": [
             {
                 "id": 0,
-                "role": "assis"
+                "role": "admin"
             },
             {
                 "id": 3,
+                "role": "assis"
+            },
+            {
+                "id": 2,
                 "role": "user"
             }
         ]

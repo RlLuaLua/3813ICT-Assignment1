@@ -24,5 +24,11 @@ export class SocketService {
     return observable;
   }
 
+  public getMessages(room: string, channel: string){
+    this.socket.emit('gethistory', room, channel)
+  }
   
+  public recMessages(next){
+    this.socket.on('gethistory', (res)=>next(res));
+  }
 }

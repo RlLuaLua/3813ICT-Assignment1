@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { RoomService } from '../services/room.service';
+import { SocketService } from '../services/socket.service';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -12,14 +14,16 @@ export class RoomComponent implements OnInit {
   roomchannels:any[] = [];
   currentroom:string = "";
   currentchannel:string = "";
+
+  messages:string[] = [];
   roomSelected:boolean = false;
   ioConnection:any;
 
-  constructor(private roomService: RoomService) { }
+  constructor(private roomService: RoomService, private socketService: SocketService, private router: Router) { }
 
   ngOnInit(): void {
     this.roomService.initSocket();
-    this.roomService.reqRooms(0);
+    this.roomService.reqRooms(1);
     this.roomService.getRooms((retRooms) => {
       this.rooms.push(retRooms);
     });
@@ -29,11 +33,16 @@ export class RoomComponent implements OnInit {
   selectRoom(){
     console.log(this.currentroom);
     this.roomchannels = [];
-    for (let i=0; i < this.rooms.length; i++) {
-      if(this.rooms[i].name == this.currentroom){
-        this.roomchannels = this.rooms[i].channels;
-        console.log(this.roomchannels);
-      }
-    }
+    this.roomService.joinRoom(this.currentroom);
+    this.roomService.joinedRoom((retChannels) => {
+      console.log(retChannels);
+      this.roomchannels = retChannels;
+    });
+  }
+
+  selectChannel(){
+    sessionStorage.setItem('room', this.currentroom);
+    sessionStorage.setItem('channel', this.currentchannel);
+    this.router.navigateByUrl("/chat");
   }
 }
