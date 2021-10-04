@@ -1,13 +1,12 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-const httpOptions = {
-  headers: new HttpHeaders({ 'Content-Type': 'application/json'})
-};
+import { AppComponent } from '../app.component';
+import { UserDataService } from '../services/user-data.service';
 
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
+import { LoginAttempt } from '../classes/login-attempt';
 
-//const BACKEND_URL = 'http://localhost:3000';
+const BACKEND_URL = 'http://localhost:3000';
 
 @Component({
   selector: 'app-login',
@@ -15,30 +14,29 @@ import { Router } from '@angular/router';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
-  username = "";
-  password = "";
+  username:string = "";
+  password:string = "";
+  userlogin:LoginAttempt | undefined;
   
-  constructor(private router: Router, private http: HttpClient) {  }
+  constructor(private router: Router, private userdata: UserDataService, public appcomp:AppComponent) {  }
   
   ngOnInit() {
   }
 
-  loginClicked() {
-    /*var userlogin = {username: this.username, password: this.password};
-    console.log(userlogin);
-    this.http.post(BACKEND_URL + '/api/auth', userlogin, httpOptions)
-      .subscribe((data: any) => {
-        alert(JSON.stringify(userlogin));
-        if (data.valid) {
-          sessionStorage.setItem('username', data.username);;
-          sessionStorage.setItem('email', data.email);
-          sessionStorage.setItem('role', data.role);
-          
-          this.http.post(BACKEND_URL + '/loginafter', data, httpOptions);
-          this.router.navigateByUrl('account');
-        } else {
-          alert('Sorry, username or password is not valid');
-        }
-      });*/
+  login(event) {
+    this.userlogin = new LoginAttempt(this.username, this.password);
+    console.log('1');
+    console.log(this.userlogin);
+    this.userdata.login(this.userlogin).subscribe((data)=>{
+      console.log(data);
+      localStorage.setItem('id', data._id);
+      localStorage.setItem('username', data.username);
+      localStorage.setItem('email', data.email);
+      localStorage.setItem('role', data.role);
+
+      this.appcomp.LoggedIn = true;
+
+      this.router.navigate(['group']);
+    })
   }
 }

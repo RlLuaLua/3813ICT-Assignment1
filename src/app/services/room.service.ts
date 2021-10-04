@@ -14,7 +14,7 @@ export class RoomService {
     this.socket = io(SERVER_URL);
   }
 
-  reqRooms(id: number): void{
+  reqRooms(id:string): void{
     this.socket.emit("rooms", id);
   }
   getRooms(next): void{

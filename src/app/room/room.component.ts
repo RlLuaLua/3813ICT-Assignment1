@@ -14,16 +14,20 @@ export class RoomComponent implements OnInit {
   roomchannels:any[] = [];
   currentroom:string = "";
   currentchannel:string = "";
-
+  id:string="";
   messages:string[] = [];
   roomSelected:boolean = false;
   ioConnection:any;
+  username:string | null="";
 
   constructor(private roomService: RoomService, private socketService: SocketService, private router: Router) { }
 
   ngOnInit(): void {
+    this.username = localStorage.getItem('username');
+
+    this.id = ""+localStorage.getItem('id');
     this.roomService.initSocket();
-    this.roomService.reqRooms(1);
+    this.roomService.reqRooms(this.id);
     this.roomService.getRooms((retRooms) => {
       this.rooms.push(retRooms);
     });

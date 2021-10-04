@@ -12,17 +12,15 @@
             },
             {
                 "name": "r1 channel 3", 
-                "messages": [" start3"]
+                "messages": ["start3"]
             }
         ],
         "users": [
             {
-                "id": 1,
-                "role": "assis"
+                "id": "61592603b88dff67ef0bfe07"
             },
             {
-                "id": 2,
-                "role": "user"
+                "id": 2
             }
         ]
     },
@@ -40,16 +38,13 @@
         ],
         "users": [
             {
-                "id": 0,
-                "role": "admin"
+                "id": 0
             },
             {
-                "id": 3,
-                "role": "assis"
+                "id": 3
             },
             {
-                "id": 2,
-                "role": "user"
+                "id": 2
             }
         ]
     },
@@ -71,12 +66,10 @@
         ],
         "users": [
             {
-                "id": 1,
-                "role": "user"
+                "id": "61592603b88dff67ef0bfe07"
             },
             {
-                "id": 2,
-                "role": "assis"
+                "id": 2
             }
         ]
     }
