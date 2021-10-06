@@ -1,33 +1,38 @@
-var fs = require('fs');
-
-roomArraytxt = fs.readFileSync('./data/rooms.json', 'utf-8');
-let roomArray = JSON.parse(roomArraytxt);
-
-userArraytxt = fs.readFileSync('./data/users.json', 'utf-8');
-let userArray = JSON.parse(userArraytxt);
-
-var socketChannel = [];
-
 module.exports = {
-    
-    connect: function(io, PORT){
+    connect: function(io, PORT, db){
         const chat = io.of('/chat');
         const room = io.of('/room');
-        //const chat = io.of("/chat");
+        var socketChannel = [];
+        var joinedRoom;
+        //get rooms collection as array
+        var roomArray;
+
+        const rooms=db.collection('rooms');
+        rooms.find({}).toArray((err, data)=>{//initialise room data
+            console.log(data);
+            roomArray = data;
+        })
+
+        const users=db.collection('users');
+
         chat.on('connection',(socket) => {
             //output connection requests to the server console
             console.log('chat: user connection on port ' + PORT + ':' + socket.id);
-            
-            chat.on("gethistory", (room, channel) => {
-                console.log("gethistory");
+            socket.on('gethistory', (room, channel) => {
+                rooms.find({}).toArray((err, data)=>{//update room data
+                    console.log(data);
+                    roomArray = data;
+                });
                 //returns messages from room's selected channel
                 for (let i=0; i < roomArray.length; i++){
                     if (roomArray[i].name == room) {
                         for (let j=0; j < roomArray[i].channels.length; j++){
                             if (roomArray[i].channels[j].name == channel){
-                                console.log(roomArray[i].channels[j].messages);
-                                socketChannel.push([socket.id, room+channel]);
-                                chat.join(room+channel).emit("gethistory", roomArray[i].channels[j].messages)
+                                var socketroom = room+"-"+channel;
+                                socket.join(socketroom);
+                                socketChannel.push([socket.id, socketroom]);
+                                var chatHist = roomArray[i].channels[j].messages
+                                return chat.in(socketroom).emit('gethistory', chatHist);
                             }
                         }
                     }
@@ -35,15 +40,17 @@ module.exports = {
             });
 
             //when message is recieved emit it back to all sockets
-            socket.on('message', (message)=>{
-                for (i=0; i<socketChannel.length; i++){
+            socket.on('message', (message, user)=>{
+                for (i=0; i<socketChannel.length; i++){//for each socket channel connection pair
                     if (socketChannel[i][0] == socket.id){//check socket channel for current socket id
-                        for(let j=0; j<roomArray.length; j++){
-                            if(socketChannel[i][1] == roomArray[i].name){
-                                for(k=0; k<roomArray[j].channels.length; k++){
-                                    if(socketChannel[i][2] == roomArray[j].channels[j].name){
-                                        chat.to(socketChannel[i][2]).emit('message', message);
-                                    }
+                        for(let j=0; j<roomArray.length; j++){//for each room in roomArray
+                            for(k=0; k<roomArray[j].channels.length; k++){//for each channel in current room
+                                if(socketChannel[i][1]==roomArray[j].name + '-' + roomArray[j].channels[k].name){
+                                    roomArray[j].channels[k].messages.push({user: user, message: message});
+                                    //add messages to mongo
+                                    rooms.update({"name":roomArray[j].name, "channels.name":roomArray[j].channels[k].name}, {"$push":{"channels.$.messages":{"user":user,"message":message}}});
+                                    return chat.to(roomArray[j].name + '-' + roomArray[j].channels[k].name)
+                                        .emit('message', {user: user, message: message})
                                 }
                             }
                         }

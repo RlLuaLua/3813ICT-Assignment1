@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { SocketService } from '../services/socket.service';
 import { FormsModule } from '@angular/forms';
+import { Message } from '../classes/message';
+
 @Component({
   selector: 'app-chat',
   templateUrl: './chat.component.html',
@@ -9,9 +11,10 @@ import { FormsModule } from '@angular/forms';
 export class ChatComponent implements OnInit {
 
   messagecontent:string="";
-  messages:string[] = [];
+  user:string="";
+  messages: Message[] = [];
   room:any = "";
-  channel: any = "";
+  channel:any = "";
   ioConnection:any;
   
   constructor(private socketService: SocketService) { }
@@ -23,23 +26,25 @@ export class ChatComponent implements OnInit {
     this.socketService.initSocket();
     this.room = sessionStorage.getItem("room");
     this.channel = sessionStorage.getItem("channel");
+    this.user = ""+sessionStorage.getItem("username");
     this.socketService.getMessages(this.room, this.channel);
     this.socketService.recMessages((msgArr) => {
       console.log(msgArr);
       this.messages = msgArr;
     })
     this.ioConnection = this.socketService.onMessage()
-      .subscribe((message:string) => {
+      .subscribe((message:Message) => {
         //add new message to message array
         this.messages.push(message);
-        console.log("messages: " + this.messages);
+        console.log(this.messages);
       });
   }
   public chat(){
     //checks if there is a message to send
     if(this.messagecontent){
-      console.log("message: " + this.messagecontent);
-      this.socketService.send(this.messagecontent);
+      console.log(this.user + " " + this.messagecontent);
+
+      this.socketService.send(this.messagecontent, this.user);
       this.messagecontent="";
     } else {
       console.log("no message");

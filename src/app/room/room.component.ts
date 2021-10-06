@@ -23,23 +23,26 @@ export class RoomComponent implements OnInit {
   constructor(private roomService: RoomService, private socketService: SocketService, private router: Router) { }
 
   ngOnInit(): void {
-    this.username = localStorage.getItem('username');
-
-    this.id = ""+localStorage.getItem('id');
+    //reset room and channel
+    sessionStorage.setItem('room', "");
+    sessionStorage.setItem('channel', "");
+    
+    this.username = sessionStorage.getItem('username');
+    this.id = ""+sessionStorage.getItem('id');
     this.roomService.initSocket();
     this.roomService.reqRooms(this.id);
     this.roomService.getRooms((retRooms) => {
       this.rooms.push(retRooms);
     });
-    console.log(this.rooms);
+    //console.log(this.rooms);
   }
 
   selectRoom(){
-    console.log(this.currentroom);
+    //console.log(this.currentroom);
     this.roomchannels = [];
     this.roomService.joinRoom(this.currentroom);
     this.roomService.joinedRoom((retChannels) => {
-      console.log(retChannels);
+      //console.log(retChannels);
       this.roomchannels = retChannels;
     });
   }

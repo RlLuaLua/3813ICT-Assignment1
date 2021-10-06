@@ -10,8 +10,6 @@ export class UserDataService {
   constructor(private http:HttpClient) { }
 
   login(login:LoginAttempt){
-    console.log('2');
-    console.log(login);
     return this.http.post<any>('http://localhost:3000/api/auth', login);
   }
 }

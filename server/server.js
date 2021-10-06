@@ -1,7 +1,8 @@
 const express = require('express');
 const app = express();
-const http = require('http').Server(app);
 const cors = require('cors');
+app.use(cors());
+const http = require('http').Server(app);
 const MongoClient = require('mongodb').MongoClient;
 var ObjectID = require('mongodb').ObjectID;
 const bodyParser = require('body-parser');
@@ -12,7 +13,7 @@ const io = require('socket.io')(http,{
   }
 });
 //apply express middleware
-app.use(cors());
+
 app.use (bodyParser.json());
 
 //Define port used for server
@@ -25,7 +26,7 @@ MongoClient.connect(MongoURL, function(err, client){
   //callback function, when connection is established, start the rest of the application
 
   if (err) {return console.log(err)}
-      const dbName = '3813';
+      const dbName = 'chat';
       const db = client.db(dbName);
 
       require('./routes/login.js')(db, app);
@@ -36,5 +37,5 @@ MongoClient.connect(MongoURL, function(err, client){
       server.listen(http, PORT);
 
       //setup socket
-      sockets.connect(io, PORT);
+      sockets.connect(io, PORT, db);
 });

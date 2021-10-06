@@ -11,6 +11,9 @@
 
     <h3>Chat Messages</h3>
     <ul>
-        <li *ngFor="let message of messages">{{message}}</li>
+        <div *ngFor="let msg of messages">
+            <h4>{{msg.user}}</h4>
+            <p>{{msg.message}}</p>
+        </div>
     </ul>
 </div>

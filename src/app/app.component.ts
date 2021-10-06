@@ -11,5 +11,5 @@ import { Component, OnInit } from '@angular/core';
 
 export class AppComponent{
   title = '';
-  LoggedIn:boolean=false;
+  LoggedIn:string|null=sessionStorage.getItem('loggedIn');
 }
