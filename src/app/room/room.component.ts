@@ -43,10 +43,6 @@ export class RoomComponent implements OnInit {
       this.Super=false;
       this.GroupAdmin=true;
       this.GroupAssis=true;
-    }else if(role =="assisAdmin"){
-      this.Super=false;
-      this.GroupAdmin=false;
-      this.GroupAssis=true;
     }else{
       this.Super=false;
       this.GroupAdmin=false;
@@ -55,25 +51,37 @@ export class RoomComponent implements OnInit {
     this.roomService.initSocket();
     this.roomService.reqRooms(this.id);
     this.roomService.getRooms((retRooms) => {
-      console.log(retRooms.name);
       this.rooms.push(retRooms);
     });
     this.refreshRooms();
-    //console.log(this.rooms);
   }
 
   refreshRooms(){
     this.rooms = [];
-    console.log(this.rooms);
     
   }
 
+  return(){
+    this.roomSelected=false;
+  }
+
+  UserLink(){
+    this.router.navigateByUrl("/createuser");
+  }
+  
   selectRoom(){
     this.roomchannels = [];
     this.roomSelected=true;
     this.roomService.joinRoom(this.currentroom, this.id);
-    this.roomService.joinedRoom((retChannels) => {
+    this.roomService.joinedRoom((retChannels, AssisStatus) => {
       this.roomchannels = retChannels;
+      this.roomService.AssisStatus((AssisStatus) => {
+        if(AssisStatus == 1 || this.GroupAdmin == true){
+          this.GroupAssis = true;
+        }else{
+          this.GroupAssis = false;
+        }
+      })
     });
   }
 
@@ -101,5 +109,21 @@ export class RoomComponent implements OnInit {
 
   deleteChannel(){
     this.roomService.removeChannel(this.currentroom, this.currentchannel);
+  }
+
+  InviteUserRoom(){
+
+  }
+
+  RemoveUserRoom(){
+
+  }
+
+  InviteUserChannel(){
+
+  }
+
+  RemoveUserChannel(){
+    
   }
 }

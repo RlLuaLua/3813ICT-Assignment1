@@ -13,7 +13,7 @@ import { AppComponent } from './app.component';
 import { ChatComponent } from './chat/chat.component';
 import { LoginComponent } from './login/login.component';
 import { RoomComponent } from './room/room.component';
-import { EditComponent } from './edit/edit.component';
+import { CreateUserComponent } from './create-user/create-user.component';
 
 @NgModule({
   declarations: [
@@ -21,7 +21,7 @@ import { EditComponent } from './edit/edit.component';
     ChatComponent,
     LoginComponent,
     RoomComponent,
-    EditComponent
+    CreateUserComponent
   ],
   imports: [
     BrowserModule,

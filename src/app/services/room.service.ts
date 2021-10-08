@@ -37,6 +37,10 @@ export class RoomService {
     this.socket.on("joinchannel", res=>next(res));
   }
 
+  AssisStatus(next){
+    this.socket.on("assisstatus", res=>next(res));
+  }
+
   createRoom(roomname, id){
     this.socket.emit("createroom", roomname, id);
   }
@@ -61,8 +65,8 @@ export class RoomService {
     this.socket.emit("removeroomuser", roomname, userid);
   }
 
-  removeChannelUser(roomname, userid){
-    this.socket.emit("removeroomuser", roomname, userid);
+  removeChannelUser(roomname, channelname, userid){
+    this.socket.emit("removechanneluser", roomname, channelname, userid);
   }
 
   checkAuthLevel(id){

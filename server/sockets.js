@@ -1,7 +1,9 @@
+var ObjectID = require('mongodb').ObjectID;
 module.exports = {
     connect: function(io, PORT, db){
         const chat = io.of('/chat');
         const room = io.of('/room');
+        const userManage = io.of('/users');
         var socketChannel = [];
         var joinedRoom;
         //get rooms collection as array
@@ -86,12 +88,17 @@ module.exports = {
                 for (let i=0; i < roomArray[curRoom].channels.length; i++) {
                     for(let j=0;j<roomArray[curRoom].channels[i].excludes.length; j++){
                         if(roomArray[curRoom].channels[i].excludes[j].id != id){
-                            console.log(roomArray[curRoom].channels[i]);
                             channelsArr.splice(i, 1);
                         }
                     }
                 }
+                for (let i=0; i<roomArray[curRoom].users.length; i++){
+                    if(roomArray[curRoom].users[i].id == id){
+                        AssisStatus = roomArray[curRoom].users[i].role;
+                    }
+                }
                 socket.emit('joinroom', channelsArr);
+                socket.emit('assisstatus', AssisStatus);
             });
 
             socket.on("createroom", (roomname, id)=>{
@@ -134,6 +141,35 @@ module.exports = {
                 rooms.updateOne({"name":roomname}, {"$pull":{"channels":{
                     "name":channelname
                 }}})
+            })
+        });
+
+        userManage.on('connection',(socket)=>{
+            console.log('user: user connection on port ' + PORT + ':' + socket.id);
+
+            socket.on('createuser', (userInfo)=>{
+                users.insertOne(userInfo);
+            })
+
+            socket.on('getusers', ()=>{
+                userResults=[];
+                users.find({}, {"_id": true, "username": true, "email": false, "password": false, "role": false}).toArray((err,data)=>{
+                    return userManage.emit('getusers', data);
+                })
+            })
+
+            socket.on('getuserdetails', (id)=>{
+                var _id = new ObjectID(id)
+                users.find({"_id": _id}).toArray((err, data)=>{
+                    if(data.length == 1){
+                        userManage.emit('getuserdetails', {_id:data[0]._id, username:data[0].username, email:data[0].email, role:data[0].role});
+                    }
+                })
+            })
+
+            socket.on('updateuserdetails', (id, username, email, role)=>{
+                var _id = new ObjectID(id)
+                users.updateOne({"_id": _id}, {"$set":{"username": username, "email": email, "role": role}})
             })
         });
     }

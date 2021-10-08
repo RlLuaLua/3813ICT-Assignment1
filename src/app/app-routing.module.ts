@@ -6,13 +6,14 @@ import { Observable } from 'rxjs';
 import { ChatComponent } from './chat/chat.component';
 import { LoginComponent } from './login/login.component';
 import { RoomComponent } from './room/room.component';
-import { EditComponent } from './edit/edit.component';
+import { CreateUserComponent } from './create-user/create-user.component';
+
 
 const routes: Routes = [
   {path: 'chat', component: ChatComponent},
   {path: '', component: LoginComponent},
   {path: 'group', component: RoomComponent},
-  {path: 'edit', component: EditComponent}
+  {path: 'createuser', component: CreateUserComponent}
 ];
 
 

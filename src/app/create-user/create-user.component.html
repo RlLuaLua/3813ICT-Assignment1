@@ -1,0 +1,66 @@
+<div class = "container">
+    <div class="row" *ngIf="groupAdmin">
+        <div class="col">
+            <form (submit) = "createUser()">
+                <h4>Create New User</h4>
+                <label>Username</label>
+                <input type="text" class = "form-control" id = "username" [(ngModel)] = "username" name = "username">
+                <label>Email</label>
+                <input type="email" class = "form-control" id = "email" [(ngModel)] = "email" name = "email">
+                <label>Password</label>
+                <input type="password" class = "form-control" id = "password" [(ngModel)] = "password" name = "password">
+                <label>Role</label><br>
+                <div *ngIf="Super">
+                    <select [(ngModel)] = "role" name = "role">
+                        <option *ngFor = "let role of roles">
+                            {{role}}
+                        </option>
+                    </select>
+                </div>
+                <div *ngIf="!Super">
+                    <select [(ngModel)] = "role" name = "role">
+                        <option *ngFor = "let groupRole of groupRoles">
+                            {{groupRole}}
+                        </option>
+                    </select>
+                </div>
+                (Leave role blank for default user)<br><br>
+                <button type = "submit" class = "btn btn-primary"><i class = "fa fa-plus-square"></i>Create</button>
+            </form>
+        </div>
+        <div class="col">
+            <h4>Edit User</h4>
+            <select [(ngModel)] = "selecteduserID" name = "selecteduserID">
+                <option [ngValue] = "null">Select user</option>
+                <option *ngFor = "let user of users" value="{{user._id}}">
+                    {{user.username}} 
+                </option>
+            </select>
+            <button (click)="editUser()" class = "btn btn-primary">Select</button>
+            <form (submit) = "updateUser()" *ngIf="userSelected">
+                <h4>Create New User</h4>
+                <label>Username</label>
+                <input type="text" class = "form-control" id = "username" [(ngModel)] = "editusername" name = "username">
+                <label>Email</label>
+                <input type="email" class = "form-control" id = "email" [(ngModel)] = "editemail" name = "email">
+                <label>Role</label><br>
+                <div *ngIf="Super">
+                    <select [(ngModel)] = "editrole" name = "role">
+                        <option *ngFor = "let role of roles">
+                            {{role}}
+                        </option>
+                    </select>
+                </div>
+                <div *ngIf="!Super">
+                    <select [(ngModel)] = "editrole" name = "role">
+                        <option *ngFor = "let groupRole of groupRoles">
+                            {{groupRole}}
+                        </option>
+                    </select>
+                </div>
+                (Leave role blank for default user)<br><br>
+                <button type = "submit" class = "btn btn-primary"><i class = "fa fa-plus-square"></i>Update</button>
+            </form>
+        </div>
+    </div>
+</div>
