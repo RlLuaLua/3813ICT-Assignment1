@@ -48,6 +48,7 @@ export class CreateUserComponent implements OnInit {
     this.userService.reqUsers();
     this.userService.getUsers((res)=>{
       this.users=res;
+      console.log(this.users);
     });
   }
 

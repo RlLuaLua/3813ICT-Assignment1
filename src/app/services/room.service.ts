@@ -28,14 +28,6 @@ export class RoomService {
   joinedRoom(next){
     this.socket.on("joinroom", res=>next(res));
   }
-  
-  joinChannel(room, channel){
-    this.socket.emit("joinchannel", room, channel);
-  }
-
-  joinedChannel(next){
-    this.socket.on("joinchannel", res=>next(res));
-  }
 
   AssisStatus(next){
     this.socket.on("assisstatus", res=>next(res));
@@ -49,10 +41,7 @@ export class RoomService {
     this.socket.emit("createchannel", roomname, channelname);
   }
 
-  inviteUsers(roomname, userid){
-    this.socket.emit("inviteuser", roomname, userid);
-  }
-
+  //remove sockets
   removeRoom(roomname){
     this.socket.emit("removeroom", roomname);
   }
@@ -60,20 +49,44 @@ export class RoomService {
   removeChannel(roomname, channelname){
     this.socket.emit("removechannel", roomname, channelname);
   }
+  //get all users
+  reqUsers(){
+    this.socket.emit('getusers');
+  }
+
+  getUsers(next){
+    this.socket.on('getusers', (res)=>next(res))
+  }
+
+  //manage room users
+  reqRoomUsers(roomname){
+    this.socket.emit("getroomusers", roomname);
+  }
+
+  getRoomUsers(next){
+    this.socket.on("getroomusers", (res)=>next(res));
+  }
+
+  addRoomUser(roomname, userid){
+    this.socket.emit("addroomuser", roomname, userid);
+  }
 
   removeRoomUser(roomname, userid){
     this.socket.emit("removeroomuser", roomname, userid);
   }
+  //manage channel users
+  reqChannelUsers(roomname){
+    this.socket.emit("getchannelusers", roomname);
+  }
 
+  getChannelUsers(next){
+    this.socket.emit("getchannelusers", (res)=>next(res));
+  }
+
+  AddChannelUser(roomname, channelname, userid){
+    this.socket.emit("addchanneluser", roomname, channelname, userid);
+  }
   removeChannelUser(roomname, channelname, userid){
     this.socket.emit("removechanneluser", roomname, channelname, userid);
-  }
-
-  checkAuthLevel(id){
-    this.socket.emit("authlevel", id);
-  }
-
-  returnAuthLevel(next){
-    this.socket.on("authlevel", res=>next(res));
   }
 }

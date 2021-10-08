@@ -142,6 +142,27 @@ module.exports = {
                     "name":channelname
                 }}})
             })
+
+            //manage users in rooms
+            socket.on('getusers', ()=>{
+                userResults=[];
+                users.find({}, {"_id": true, "username": true, "email": false, "password": false, "role": false}).toArray((err,data)=>{
+                    var result=[];
+                    for (i=0; i<data.length; i++){
+                        result.push({"_id": data[i]._id, "username": data[i].username})
+                    }
+                    return room.emit('getusers', result);
+                })
+            })
+
+            socket.on('getroomusers', (roomname)=>{
+                userResults=[];
+                rooms.find({"name":roomname}).toArray((err,data)=>{
+                    console.log(data[0].users);
+                })
+            })
+
+
         });
 
         userManage.on('connection',(socket)=>{
@@ -154,7 +175,11 @@ module.exports = {
             socket.on('getusers', ()=>{
                 userResults=[];
                 users.find({}, {"_id": true, "username": true, "email": false, "password": false, "role": false}).toArray((err,data)=>{
-                    return userManage.emit('getusers', data);
+                    var result=[];
+                    for (i=0; i<data.length; i++){
+                        result.push({"_id": data[i]._id, "username": data[i].username})
+                    }
+                    return userManage.emit('getusers', result);
                 })
             })
 

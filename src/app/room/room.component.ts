@@ -19,11 +19,21 @@ export class RoomComponent implements OnInit {
   id:string="";
   messages:string[] = [];
   roomSelected:boolean = false;
+  chanSelected:boolean = false;
   ioConnection:any;
   username:string | null="";
   Super:boolean = false;
   GroupAdmin:boolean = false;
   GroupAssis:boolean = false;
+
+  //user management
+  AllUsers:any[] = [];
+  addUserRoom:string="";
+  removeUserRoom:string="";
+  CurRoomUsers:any[]=[];
+  addUserChan:string="";
+  removeUserChan:string="";
+  ExcludeUsers:any[]=[];
 
   constructor(private roomService: RoomService, private socketService: SocketService, private router: Router) { }
 
@@ -69,7 +79,7 @@ export class RoomComponent implements OnInit {
     this.router.navigateByUrl("/createuser");
   }
   
-  selectRoom(){
+  joinRoom(){
     this.roomchannels = [];
     this.roomSelected=true;
     this.roomService.joinRoom(this.currentroom, this.id);
@@ -83,9 +93,21 @@ export class RoomComponent implements OnInit {
         }
       })
     });
+    if(this.GroupAssis==true){
+      this.roomService.reqUsers();
+      this.roomService.getUsers((users)=>{
+        this.AllUsers=users;
+        console.log(this.AllUsers);
+      })
+      this.roomService.reqRoomUsers(this.currentroom);
+      this.roomService.getRoomUsers((roomusers)=>{
+        this.CurRoomUsers=roomusers;
+        console.log(this.CurRoomUsers);
+      })
+    }
   }
 
-  selectChannel(){
+  joinChannel(){
     sessionStorage.setItem('room', this.currentroom);
     sessionStorage.setItem('channel', this.currentchannel);
     this.router.navigateByUrl("/chat");
@@ -112,18 +134,18 @@ export class RoomComponent implements OnInit {
   }
 
   InviteUserRoom(){
-
+    this.roomService.addRoomUser(this.roomSelected, this.addUserRoom);
   }
 
   RemoveUserRoom(){
-
-  }
-
-  InviteUserChannel(){
-
+    this.roomService.removeRoomUser(this.roomSelected, this.removeUserRoom);
   }
 
   RemoveUserChannel(){
-    
+
+  }
+
+  ReturnUserChannel(){
+
   }
 }

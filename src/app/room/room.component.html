@@ -3,6 +3,7 @@
         <h1>User: {{username}}</h1>
     </div>
     <div class="row">
+        <!--Column 1-->
         <div class="col">
             <div *ngIf="!roomSelected">
                 <label><h3>Group Select</h3></label><br>
@@ -12,7 +13,7 @@
                         {{room.name}}
                     </option>
                 </select><br><br>
-            <button (click) = "selectRoom()" class = "btn btn-primary">Select</button>
+            <button (click) = "joinRoom()" class = "btn btn-primary">Select</button>
             <button *ngIf="GroupAdmin" (click) = "deleteRoom()" class = "btn btn-primary">Delete</button><br>
             </div>
             <div *ngIf="roomSelected">
@@ -24,10 +25,11 @@
                         {{roomchannel.name}} 
                     </option>
                 </select><br><br>
-                <button (click) = "selectChannel()" class = "btn btn-primary">Enter</button>
+                <button (click) = "joinChannel()" class = "btn btn-primary">Enter</button>
                 <button *ngIf="GroupAdmin" (click) = "deleteChannel()" class = "btn btn-primary">Delete</button>
             </div>
         </div>
+        <!--Column 2-->
         <div class="col">
             <button *ngIf="GroupAdmin" (click) = "UserLink()">Create new/edit User</button>
             <div *ngIf="!roomSelected"><div *ngIf="GroupAdmin">
@@ -37,13 +39,35 @@
                     <button type = "submit" class = "btn btn-primary"><i class = "fa fa-plus-square"></i>Create</button>
                 </form>
             </div></div>
-            <div *ngIf="roomSelected"><div *ngIf="GroupAssis">
-                <form (submit) = "createNewChannel()">
-                    <label><h4>Create New Channel</h4></label>
-                    <input type="text" class = "form-control" id = "newChannelName" [(ngModel)] = "newChannelName" name = "newChannelName">
-                    <button type = "submit" class = "btn btn-primary"><i class = "fa fa-plus-square"></i>Create</button>
-                </form>
-            </div></div>
+            <div *ngIf="GroupAssis">
+                <div *ngIf="roomSelected">
+                    <form (submit) = "createNewChannel()">
+                        <label><h4>Create New Channel</h4></label>
+                        <input type="text" class = "form-control" id = "newChannelName" [(ngModel)] = "newChannelName" name = "newChannelName">
+                        <button type = "submit" class = "btn btn-primary"><i class = "fa fa-plus-square"></i>Create</button>
+                    </form>
+                    <form (submit)="InviteUserRoom()">
+                        <label><h6>Add New User</h6></label>
+                        <select [(ngModel)]="addUserRoom" name="addUserRoom">
+                            <option [ngValue] = "null">Select User</option>
+                            <option *ngFor="let AllUser of AllUsers" value="{{AllUser.id}}">
+                                {{AllUser.username}}
+                            </option>
+                        </select>
+                        <button type = "submit" class = "btn btn-primary"><i class = "fa fa-plus-square"></i>Add to {{currentroom}}</button>
+                    </form>
+                    <form (submit)="RemoveUserRoom()">
+                        <label><h6>Add New User</h6></label>
+                        <select [(ngModel)]="removeUserRoom" name="removeUserRoom">
+                            <option [ngValue] = "null">Select User</option>
+                            <option *ngFor="let CurRoomUser of CurRoomUsers" value="{{CurRoomUser.id}}">
+                                {{CurRoomUser.username}}
+                            </option>
+                        </select>
+                        <button type = "submit" class = "btn btn-primary"><i class = "fa fa-plus-square"></i>Add to {{currentroom}}</button>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 </div>
