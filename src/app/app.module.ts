@@ -13,13 +13,15 @@ import { AppComponent } from './app.component';
 import { ChatComponent } from './chat/chat.component';
 import { LoginComponent } from './login/login.component';
 import { RoomComponent } from './room/room.component';
+import { EditComponent } from './edit/edit.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     ChatComponent,
     LoginComponent,
-    RoomComponent
+    RoomComponent,
+    EditComponent
   ],
   imports: [
     BrowserModule,

@@ -4,15 +4,18 @@
         "channels": [
             {
                 "name": "r1 channel 1", 
-                "messages": [{"user": "server", "message": "start1"}]
+                "messages": [{"user": "server", "message": "start1"}],
+                "excludes": [{"id": "615d143e7d578e8078734308"}]
             },
             {
                 "name": "r1 channel 2", 
-                "messages": [{"user": "server", "message": "start2"}]
+                "messages": [{"user": "server", "message": "start2"}],
+                "excludes": []
             },
             {
                 "name": "r1 channel 3", 
-                "messages": [{"user": "server", "message": "start3"}]
+                "messages": [{"user": "server", "message": "start3"}],
+                "excludes": []
             }
         ],
         "users": [
@@ -29,11 +32,13 @@
         "channels": [
             {
                 "name": "r2 channel 1", 
-                "messages": [{"user": "server", "message": "start1"}]
+                "messages": [{"user": "server", "message": "start1"}],
+                "excludes": []
             },
             {
                 "name": "r2 channel 2", 
-                "messages": [{"user": "server", "message": "start2"}]
+                "messages": [{"user": "server", "message": "start2"}],
+                "excludes": []
             }
         ],
         "users": [
@@ -53,15 +58,18 @@
         "channels": [
             {
                 "name": "r3 channel 1", 
-                "messages": []
+                "messages": [],
+                "excludes": []
             },
             {
                 "name": "r3 channel 2", 
-                "messages": []
+                "messages": [],
+                "excludes": []
             },
             {
                 "name": "r3 channel 3", 
-                "messages": []
+                "messages": [],
+                "excludes": []
             }
         ],
         "users": [

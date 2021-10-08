@@ -21,8 +21,8 @@ export class RoomService {
     this.socket.on("rooms", res=>next(res));
   }
 
-  joinRoom(room){
-    this.socket.emit("joinroom", room);
+  joinRoom(room, id){
+    this.socket.emit("joinroom", room, id);
   }
 
   joinedRoom(next){
@@ -35,5 +35,41 @@ export class RoomService {
 
   joinedChannel(next){
     this.socket.on("joinchannel", res=>next(res));
+  }
+
+  createRoom(roomname, id){
+    this.socket.emit("createroom", roomname, id);
+  }
+
+  createChannel(roomname, channelname){
+    this.socket.emit("createchannel", roomname, channelname);
+  }
+
+  inviteUsers(roomname, userid){
+    this.socket.emit("inviteuser", roomname, userid);
+  }
+
+  removeRoom(roomname){
+    this.socket.emit("removeroom", roomname);
+  }
+
+  removeChannel(roomname, channelname){
+    this.socket.emit("removechannel", roomname, channelname);
+  }
+
+  removeRoomUser(roomname, userid){
+    this.socket.emit("removeroomuser", roomname, userid);
+  }
+
+  removeChannelUser(roomname, userid){
+    this.socket.emit("removeroomuser", roomname, userid);
+  }
+
+  checkAuthLevel(id){
+    this.socket.emit("authlevel", id);
+  }
+
+  returnAuthLevel(next){
+    this.socket.on("authlevel", res=>next(res));
   }
 }

@@ -9,7 +9,6 @@ module.exports = {
 
         const rooms=db.collection('rooms');
         rooms.find({}).toArray((err, data)=>{//initialise room data
-            console.log(data);
             roomArray = data;
         })
 
@@ -20,7 +19,6 @@ module.exports = {
             console.log('chat: user connection on port ' + PORT + ':' + socket.id);
             socket.on('gethistory', (room, channel) => {
                 rooms.find({}).toArray((err, data)=>{//update room data
-                    console.log(data);
                     roomArray = data;
                 });
                 //returns messages from room's selected channel
@@ -61,7 +59,11 @@ module.exports = {
 
         room.on('connection',(socket) => {
             console.log('room: user connection on port ' + PORT + ':' + socket.id);
-            
+
+            rooms.find({}).toArray((err, data)=>{//update room data
+                roomArray = data;
+            });
+
             socket.on("rooms", (id) => {
                 for(let i=0; i < roomArray.length; i++) {
                     for(let j=0; j < roomArray[i].users.length; j++) {
@@ -72,15 +74,67 @@ module.exports = {
                 }
             });
             //gets all channels for selected room (group)
-            socket.on("joinroom", (room) => {
+            socket.on("joinroom", (room, id) => {
+                var channelsArr = [];
+                var curRoom;
                 for (let i=0; i < roomArray.length; i++) {
                     if(roomArray[i].name == room){
-                        socket.emit("joinroom", roomArray[i].channels);
+                        channelsArr = roomArray[i].channels;
+                        curRoom = i;
                     }
-                  }
+                }
+                for (let i=0; i < roomArray[curRoom].channels.length; i++) {
+                    for(let j=0;j<roomArray[curRoom].channels[i].excludes.length; j++){
+                        if(roomArray[curRoom].channels[i].excludes[j].id != id){
+                            console.log(roomArray[curRoom].channels[i]);
+                            channelsArr.splice(i, 1);
+                        }
+                    }
+                }
+                socket.emit('joinroom', channelsArr);
             });
-        });
-        
-    }
 
+            socket.on("createroom", (roomname, id)=>{
+                rooms.find({"name":roomname}).toArray((err, data)=>{
+                    if(data.length == 0){//if no match was found
+                        rooms.insertOne({
+                            "name": roomname, 
+                            "channels": [],
+                            "users": [
+                                {
+                                    "id": id
+                                }
+                            ]
+                        }, ()=>{
+                            rooms.find({}).toArray((err, data)=>{//update room data
+                                roomArray = data;
+                            })
+                        })
+                    }
+                })
+            });
+
+            socket.on("removeroom", (roomname)=>{
+                rooms.remove({"name": roomname}, ()=>{
+                    rooms.find({}).toArray((err, data)=>{//update room data
+                        roomArray = data;
+                    })
+                })
+            })
+
+            socket.on("createchannel", (roomname, channelname)=>{
+                rooms.updateOne({"name":roomname}, {"$push":{"channels":{
+                    "name":channelname,
+                    "messages":[],
+                    "excludes":[]
+                }}})
+            })
+
+            socket.on("removechannel", (roomname, channelname)=>{
+                rooms.updateOne({"name":roomname}, {"$pull":{"channels":{
+                    "name":channelname
+                }}})
+            })
+        });
+    }
 }

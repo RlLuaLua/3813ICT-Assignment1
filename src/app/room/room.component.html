@@ -1,17 +1,45 @@
-<h1>User: {{username}}</h1>
-<label><h3>Group Select</h3></label><br>
-<select [(ngModel)] = "currentroom" name = "currentroom">
-    <option [ngValue] = "null">Select Group</option>
-    <option *ngFor = "let room of rooms">
-        {{room.name}}
-    </option>
-</select>
-<button (click) = "selectRoom()">Select</button><br>
-<label><h3>Channel Select</h3></label><br>
-<select [(ngModel)] = "currentchannel" name = "currentchannel">
-    <option [ngValue] = "null">Select Room</option>
-    <option *ngFor = "let roomchannel of roomchannels">
-        {{roomchannel.name}} 
-    </option>
-</select>
-<button (click) = "selectChannel()">Select</button>
+<div class = "container">
+    <div class="row">
+        <h1>User: {{username}}</h1>
+    </div>
+    <div class="row">
+        <div class="col">
+            <label><h3>Group Select</h3></label><br>
+            <select [(ngModel)] = "currentroom" name = "currentroom">
+                <option [ngValue] = "null">Select Group</option>
+                <option *ngFor = "let room of rooms">
+                    {{room.name}}
+                </option>
+            </select><br><br>
+            <button (click) = "selectRoom()" class = "btn btn-primary">Select</button>
+            <button *ngIf="GroupAdmin" (click) = "deleteRoom()" class = "btn btn-primary">Delete</button><br>
+            <div *ngIf="roomSelected">
+                <label><h3>Channel Select</h3></label><br>
+                <select [(ngModel)] = "currentchannel" name = "currentchannel">
+                    <option [ngValue] = "null">Select Room</option>
+                    <option *ngFor = "let roomchannel of roomchannels">
+                        {{roomchannel.name}} 
+                    </option>
+                </select>
+                <button (click) = "selectChannel()" class = "btn btn-primary">Enter</button>
+                <button *ngIf="GroupAdmin" (click) = "deleteChannel()" class = "btn btn-primary">Delete</button>
+            </div>
+        </div>
+        <div class="col" *ngIf="GroupAdmin">
+            <div>
+                <form (submit) = "createNewRoom()">
+                    <label><h4>Create New Room</h4></label>
+                    <input type="text" class = "form-control" id = "newRoomName" [(ngModel)] = "newRoomName" name = "newRoomName">
+                    <button type = "submit" class = "btn btn-primary"><i class = "fa fa-plus-square"></i>Create</button>
+                </form>
+            </div>
+            <div>
+                <form (submit) = "createNewChannel()">
+                    <label><h4>Create New Channel</h4></label>
+                    <input type="text" class = "form-control" id = "newChannelName" [(ngModel)] = "newChannelName" name = "newChannelName">
+                    <button type = "submit" class = "btn btn-primary"><i class = "fa fa-plus-square"></i>Create</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
