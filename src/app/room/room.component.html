@@ -1,10 +1,16 @@
 <div class = "container">
-    <div class="row">
-        <h1>User: {{username}}</h1>
+    <div class="row" style="margin-bottom: 20px; padding: 10px; background-color: rgb(69, 123, 157);">
+        <div class="col">
+            <button *ngIf="roomSelected" (click) = "return()" class = "btn btn-primary">return</button>
+        </div>
+        <div class="col-8">
+            <h3>User: {{username}}</h3>
+            <button *ngIf="GroupAdmin" class = "btn btn-primary" (click) = "UserLink()">Create new/edit User</button>
+        </div>
     </div>
     <div class="row">
         <!--Column 1-->
-        <div class="col">
+        <div class="col" style="padding: 5px; margin-top: 5px; background-color: rgb(69, 123, 157);">
             <div *ngIf="!roomSelected">
                 <label><h3>Group Select</h3></label><br>
                 <select [(ngModel)] = "currentroom" name = "currentroom">
@@ -17,29 +23,31 @@
             <button *ngIf="GroupAdmin" (click) = "deleteRoom()" class = "btn btn-primary">Delete</button><br>
             </div>
             <div *ngIf="roomSelected">
-                <button (click) = "return()" class = "btn btn-primary">return</button><br>
                 <label><h3>Channel Select: {{currentroom}}</h3></label><br>
                 <select [(ngModel)] = "currentchannel" name = "currentchannel">
-                    <option [ngValue] = "null">Select Room</option>
+                    <option [ngValue] = "null">Select Channel</option>
                     <option *ngFor = "let roomchannel of roomchannels">
                         {{roomchannel.name}} 
                     </option>
                 </select><br><br>
+                
+                <button (click) = "selectChannel()" class = "btn btn-primary">Select</button>
+                <button *ngIf="GroupAdmin" (click) = "deleteChannel()" class = "btn btn-primary">Delete</button><br>
                 <button (click) = "joinChannel()" class = "btn btn-primary">Enter</button>
-                <button *ngIf="GroupAdmin" (click) = "deleteChannel()" class = "btn btn-primary">Delete</button>
             </div>
         </div>
         <!--Column 2-->
-        <div class="col">
-            <button *ngIf="GroupAdmin" (click) = "UserLink()">Create new/edit User</button>
+        <div class="col-8" style="padding: 5px; margin-left:5px; margin-top: 5px; background-color: rgb(168, 218, 220);">
             <div *ngIf="!roomSelected"><div *ngIf="GroupAdmin">
+                <h3>Options for: {{username}}</h3>
                 <form (submit) = "createNewRoom()">
                     <label><h4>Create New Room</h4></label>
                     <input type="text" class = "form-control" id = "newRoomName" [(ngModel)] = "newRoomName" name = "newRoomName">
                     <button type = "submit" class = "btn btn-primary"><i class = "fa fa-plus-square"></i>Create</button>
                 </form>
             </div></div>
-            <div *ngIf="GroupAssis">
+            <div *ngIf="GroupAssis"><div *ngIf="!chanSelected">
+                <h3 *ngIf="roomSelected">Options for: {{currentroom}}</h3>
                 <div *ngIf="roomSelected">
                     <form (submit) = "createNewChannel()">
                         <label><h4>Create New Channel</h4></label>
@@ -49,22 +57,53 @@
                     <form (submit)="InviteUserRoom()">
                         <label><h6>Add New User</h6></label>
                         <select [(ngModel)]="addUserRoom" name="addUserRoom">
-                            <option [ngValue] = "null">Select User</option>
-                            <option *ngFor="let AllUser of AllUsers" value="{{AllUser.id}}">
+                            <option Value = "">Select User</option>
+                            <option *ngFor="let AllUser of AllUsers" value="{{AllUser._id}}">
                                 {{AllUser.username}}
+                            </option>
+                        </select>
+                        <label *ngIf="GroupAdmin"><h6>Select User role</h6></label>
+                        <select [(ngModel)]="addUserRoomRole" name="addUserRoomRole" *ngIf="GroupAdmin">
+                            <option value="0">
+                                none
+                            </option>
+                            <option value="1">
+                                GroupAssis
                             </option>
                         </select>
                         <button type = "submit" class = "btn btn-primary"><i class = "fa fa-plus-square"></i>Add to {{currentroom}}</button>
                     </form>
                     <form (submit)="RemoveUserRoom()">
-                        <label><h6>Add New User</h6></label>
+                        <label><h6>Remove User</h6></label>
                         <select [(ngModel)]="removeUserRoom" name="removeUserRoom">
                             <option [ngValue] = "null">Select User</option>
-                            <option *ngFor="let CurRoomUser of CurRoomUsers" value="{{CurRoomUser.id}}">
+                            <option *ngFor="let CurRoomUser of CurRoomUsers" value="{{CurRoomUser._id}}">
                                 {{CurRoomUser.username}}
                             </option>
                         </select>
-                        <button type = "submit" class = "btn btn-primary"><i class = "fa fa-plus-square"></i>Add to {{currentroom}}</button>
+                        <button type = "submit" class = "btn btn-primary"><i class = "fa fa-plus-square"></i>Remove from {{currentroom}}</button>
+                    </form>
+                </div></div>
+                <div *ngIf="chanSelected">
+                    <form (submit)="RemoveUserChannel()">
+                        <label><h6>Block from Channel</h6></label>
+                        <select [(ngModel)]="removeUserChan" name="removeUserChan">
+                            <option [ngValue] = "null">Select User</option>
+                            <option *ngFor="let CurRoomUser of CurRoomUsers" value="{{CurRoomUser._id}}">
+                                {{CurRoomUser.username}}
+                            </option>
+                        </select>
+                        <button type = "submit" class = "btn btn-primary"><i class = "fa fa-plus-square"></i>Block from {{currentchannel}}</button>
+                    </form>
+                    <form (submit)="ReturnUserChannel()">
+                        <label><h6>Unblock from Channel</h6></label>
+                        <select [(ngModel)]="addUserChan" name="addUserChan">
+                            <option [ngValue] = "null">Select User</option>
+                            <option *ngFor="let CurRoomUser of CurRoomUsers" value="{{CurRoomUser._id}}">
+                                {{CurRoomUser.username}}
+                            </option>
+                        </select>
+                        <button type = "submit" class = "btn btn-primary"><i class = "fa fa-plus-square"></i>Unblock from {{currentchannel}}</button>
                     </form>
                 </div>
             </div>

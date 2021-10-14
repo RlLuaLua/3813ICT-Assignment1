@@ -9,13 +9,17 @@ module.exports = {
         //get rooms collection as array
         var roomArray;
 
+        //gets collection name for Rooms database
         const rooms=db.collection('rooms');
+        //gets and saves entire Rooms db at current time.
         rooms.find({}).toArray((err, data)=>{//initialise room data
             roomArray = data;
         })
 
+        //gets collection name for Users database
         const users=db.collection('users');
-
+        
+        //on connection to localhost:3000/chat
         chat.on('connection',(socket) => {
             //output connection requests to the server console
             console.log('chat: user connection on port ' + PORT + ':' + socket.id);
@@ -59,6 +63,7 @@ module.exports = {
             });
         });
 
+        //on connection to localhost:3000/room
         room.on('connection',(socket) => {
             console.log('room: user connection on port ' + PORT + ':' + socket.id);
 
@@ -101,6 +106,7 @@ module.exports = {
                 socket.emit('assisstatus', AssisStatus);
             });
 
+            //creates a new room with a name and adds the user who created it to the user list
             socket.on("createroom", (roomname, id)=>{
                 rooms.find({"name":roomname}).toArray((err, data)=>{
                     if(data.length == 0){//if no match was found
@@ -112,15 +118,11 @@ module.exports = {
                                     "id": id
                                 }
                             ]
-                        }, ()=>{
-                            rooms.find({}).toArray((err, data)=>{//update room data
-                                roomArray = data;
-                            })
                         })
                     }
                 })
             });
-
+            //removes a room based on the room name
             socket.on("removeroom", (roomname)=>{
                 rooms.remove({"name": roomname}, ()=>{
                     rooms.find({}).toArray((err, data)=>{//update room data
@@ -128,7 +130,7 @@ module.exports = {
                     })
                 })
             })
-
+            //creates a new channel for a room based on the roomname. also names the channel
             socket.on("createchannel", (roomname, channelname)=>{
                 rooms.updateOne({"name":roomname}, {"$push":{"channels":{
                     "name":channelname,
@@ -136,7 +138,7 @@ module.exports = {
                     "excludes":[]
                 }}})
             })
-
+            //removes a channel based on the name of it's corresponding room, and the name of the channel
             socket.on("removechannel", (roomname, channelname)=>{
                 rooms.updateOne({"name":roomname}, {"$pull":{"channels":{
                     "name":channelname
@@ -144,9 +146,10 @@ module.exports = {
             })
 
             //manage users in rooms
+            //get all users
             socket.on('getusers', ()=>{
                 userResults=[];
-                users.find({}, {"_id": true, "username": true, "email": false, "password": false, "role": false}).toArray((err,data)=>{
+                users.find({}).toArray((err,data)=>{
                     var result=[];
                     for (i=0; i<data.length; i++){
                         result.push({"_id": data[i]._id, "username": data[i].username})
@@ -155,26 +158,78 @@ module.exports = {
                 })
             })
 
+            //get users in specific room(group)
             socket.on('getroomusers', (roomname)=>{
                 userResults=[];
                 rooms.find({"name":roomname}).toArray((err,data)=>{
-                    console.log(data[0].users);
+                    for(i=0; i<data[0].users.length; i++){
+                        console.log(data[0].users[i].id + " 1");
+                        var id = new ObjectID(data[0].users[i].id);
+                        users.find({"_id":id}).toArray((err,userdata)=>{
+                            userResults.push({"_id":userdata[0]._id, "username":userdata[0].username});
+                            if(userResults.length == i){
+                                room.emit('getroomusers', userResults);
+                            }
+                        })
+                    }
+                })
+            })
+            //add user to group
+            socket.on('addroomuser', (roomname, userid, role)=>{
+                console.log(userid);
+                rooms.find({"name":roomname}).toArray((err,data)=>{
+                    for(i=0; i<data[0].users.length; i++){
+                        if(data[0].users[i].id==userid){
+                            console.log("there");
+                            break
+                        }
+                        if(i+1 == data[0].users.length){
+                            console.log("here");
+                            rooms.updateOne({"name": roomname}, {"$push":{"users":{"id":userid, "role":role}}})
+                        }
+                    }
+                })
+            })
+            //remove user from group
+            socket.on('removeroomuser', (roomname, userid)=>{
+                rooms.find({"name":roomname}).toArray((err,data)=>{
+                    for(i=0; i<data[0].users.length; i++){
+                        if(data[0].users[i].id==userid){
+                            rooms.updateOne({"name": roomname}, {"$pull":{"users":{"id":userid}}})
+                        }
+                    }
                 })
             })
 
-
+            //exclude groupuser from channel
+            socket.on('removechanneluser', (roomname, channelname, userid)=>{
+                rooms.find({"name":roomname, "channels.$.name":channelname,"channels.excludes.id":userid}).toArray((err,data)=>{
+                    console.log(data)
+                    if(data.length == 0){
+                        rooms.updateOne({"name":roomname, "channels.name":channelname}, {"$push":{"channels.$.excludes":{"id":userid}}})
+                    }
+                })
+            })
+            //unexclude groupuser from channel
+            socket.on('addchanneluser', (roomname, channelname, userid)=>{
+                rooms.updateOne({"name":roomname, "channels.name":channelname,"channels.excludes.id":userid}, {"$pull":{"channels.$.excludes":{"id":userid}}})
+                
+            })
         });
 
+        //on connection to localhost:3000/users
         userManage.on('connection',(socket)=>{
             console.log('user: user connection on port ' + PORT + ':' + socket.id);
 
+            //creates one user based on New-User class
             socket.on('createuser', (userInfo)=>{
                 users.insertOne(userInfo);
             })
 
+            //gets a list of all users
             socket.on('getusers', ()=>{
                 userResults=[];
-                users.find({}, {"_id": true, "username": true, "email": false, "password": false, "role": false}).toArray((err,data)=>{
+                users.find({}).toArray((err,data)=>{
                     var result=[];
                     for (i=0; i<data.length; i++){
                         result.push({"_id": data[i]._id, "username": data[i].username})
@@ -183,6 +238,7 @@ module.exports = {
                 })
             })
 
+            //returns user details for user based on the user's ID (excluding password)
             socket.on('getuserdetails', (id)=>{
                 var _id = new ObjectID(id)
                 users.find({"_id": _id}).toArray((err, data)=>{
@@ -192,6 +248,7 @@ module.exports = {
                 })
             })
 
+            //changes the username, email & role of a user based off the ID.
             socket.on('updateuserdetails', (id, username, email, role)=>{
                 var _id = new ObjectID(id)
                 users.updateOne({"_id": _id}, {"$set":{"username": username, "email": email, "role": role}})

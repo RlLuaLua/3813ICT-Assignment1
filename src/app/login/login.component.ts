@@ -35,7 +35,7 @@ export class LoginComponent implements OnInit {
         sessionStorage.setItem('email', data.email);
         sessionStorage.setItem('role', data.role);
         sessionStorage.setItem('loggedIn', 'true');
-
+        this.appcomp.LoggedIn=true;
         this.router.navigate(['group']);
       }else{
         this.errormsg=data.err;

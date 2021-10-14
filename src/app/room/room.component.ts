@@ -29,6 +29,7 @@ export class RoomComponent implements OnInit {
   //user management
   AllUsers:any[] = [];
   addUserRoom:string="";
+  addUserRoomRole:number=0;
   removeUserRoom:string="";
   CurRoomUsers:any[]=[];
   addUserChan:string="";
@@ -59,20 +60,22 @@ export class RoomComponent implements OnInit {
       this.GroupAssis=false;
     }
     this.roomService.initSocket();
-    this.roomService.reqRooms(this.id);
-    this.roomService.getRooms((retRooms) => {
-      this.rooms.push(retRooms);
-    });
+    
     this.refreshRooms();
   }
 
   refreshRooms(){
     this.rooms = [];
-    
+    this.roomService.reqRooms(this.id);
+    this.roomService.getRooms((retRooms) => {
+      console.log(retRooms);
+      this.rooms.push(retRooms);
+    });
   }
 
   return(){
     this.roomSelected=false;
+    this.chanSelected=false;
   }
 
   UserLink(){
@@ -97,13 +100,17 @@ export class RoomComponent implements OnInit {
       this.roomService.reqUsers();
       this.roomService.getUsers((users)=>{
         this.AllUsers=users;
-        console.log(this.AllUsers);
       })
       this.roomService.reqRoomUsers(this.currentroom);
       this.roomService.getRoomUsers((roomusers)=>{
         this.CurRoomUsers=roomusers;
-        console.log(this.CurRoomUsers);
       })
+    }
+  }
+
+  selectChannel(){
+    if(this.currentchannel!=""){
+      this.chanSelected=true;
     }
   }
 
@@ -134,18 +141,24 @@ export class RoomComponent implements OnInit {
   }
 
   InviteUserRoom(){
-    this.roomService.addRoomUser(this.roomSelected, this.addUserRoom);
+    if(this.addUserRoom != ""){
+      this.roomService.addRoomUser(this.currentroom, this.addUserRoom, this.addUserRoomRole);
+    }
   }
 
   RemoveUserRoom(){
-    this.roomService.removeRoomUser(this.roomSelected, this.removeUserRoom);
+    this.roomService.removeRoomUser(this.currentroom, this.removeUserRoom);
   }
 
   RemoveUserChannel(){
-
+    if(this.removeUserChan != ""){
+      this.roomService.removeChannelUser(this.currentroom, this.currentchannel, this.removeUserChan);
+    }
   }
 
   ReturnUserChannel(){
-
+    if(this.removeUserChan != ""){
+      this.roomService.addChannelUser(this.currentroom, this.currentchannel, this.removeUserChan);
+    }
   }
 }

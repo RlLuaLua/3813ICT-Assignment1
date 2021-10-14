@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -11,6 +11,23 @@ import { Component, OnInit } from '@angular/core';
 
 export class AppComponent{
   title = '';
-  LoggedIn:string|null=sessionStorage.getItem('loggedIn');
-  
+  LoggedIn:boolean=false;
+
+  constructor(private router: Router) { }
+
+  ngOnInit(): void {
+    if(sessionStorage.getItem("username")){
+      this.LoggedIn=true;
+    }
+  }
+
+  LogIn(){
+    this.router.navigateByUrl("");
+  }
+
+  LogOut(){
+    this.LoggedIn=false
+    sessionStorage.clear();
+    this.router.navigateByUrl("");
+  }
 }
